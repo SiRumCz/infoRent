@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>InfoRent</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+    </script>
+    <script href="/js/markerclusterer.js" type="text/javascript">
+    </script>
+    <!-- Bootstrap core CSS and js -->
+    <!-- <link href="/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet"> -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- Custom fonts for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <!--resources related to toggle buttons-->
+    <script src="https://unpkg.com/nouislider@10.0.0/distribute/nouislider.min.js"></script>
+    <script src="https://unpkg.com/wnumb@1.1.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/nouislider@10.0.0/distribute/nouislider.min.css">
+    <link rel="stylesheet"  type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.3.2/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/toggle_button">
+
+    <!-- D3.js CDN source -->
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.5/d3-legend.js"></script>
+
+    <style>
+      /* General styles for all menus */
+      .containers {
+  position: relative;
+  width: 100%;
+  height:100%;
+  padding-right: 0px;
+  padding-left: 0px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.footers {
+    height:4%;
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   color: white;
+   text-align: center;
+}
+
+.filter-bar {
+  position: absolute;
+  width: 30%;
+  height: 575px;
+  top: 77px;
+  right: 0px;
+  border: 3px solid #000000;
+  padding: 10px;
+}
+
+.filterButton {
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+}
+
+.filters {
+    border-bottom: 3px solid #000000;
+    margin-bottom:10px;
+    height: 290px
+}
+
+.regular-slider {
+    top: 7px;
+}
+
+.sidebar {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 120px;
+    background-color: lightgreen;
+}
+
+.cbp-spmenu {
+	background: #47a3da;
+	position: fixed;
+}
+
+.cbp-spmenu h3 {
+	color: #afdefa;
+	font-size: 1.9em;
+	padding: 20px;
+	margin: 0;
+	font-weight: 300;
+	background: #0d77b6;
+}
+
+.cbp-spmenu a {
+	display: block;
+	color: #fff;
+	font-size: 1.1em;
+	font-weight: 300;
+}
+
+.cbp-spmenu a:hover {
+	background: #258ecd;
+}
+
+.cbp-spmenu a:active {
+	background: #afdefa;
+	color: #47a3da;
+}
+
+/* Orientation-dependent styles for the content of the menu */
+
+.cbp-spmenu-vertical {
+	width: 240px;
+	height: 100%;
+	top: 0;
+	z-index: 1000;
+}
+
+.cbp-spmenu-vertical a {
+	border-bottom: 1px solid #258ecd;
+	padding: 1em;
+}
+
+.cbp-spmenu-horizontal {
+	width: 100%;
+	height: 150px;
+	left: 0;
+	z-index: 1000;
+	overflow: hidden;
+}
+
+.cbp-spmenu-horizontal h3 {
+	height: 100%;
+	width: 20%;
+	float: left;
+}
+
+.cbp-spmenu-horizontal a {
+	float: left;
+	width: 20%;
+	padding: 0.8em;
+	border-left: 1px solid #258ecd;
+}
+
+/* Vertical menu that slides from the left or right */
+
+.cbp-spmenu-left {
+	left: -240px;
+}
+
+.cbp-spmenu-right {
+	right: -240px;
+}
+
+.cbp-spmenu-left.cbp-spmenu-open {
+	left: 0px;
+}
+
+.cbp-spmenu-right.cbp-spmenu-open {
+	right: 0px;
+}
+
+/* Horizontal menu that slides from the top or bottom */
+
+.cbp-spmenu-top {
+	top: -150px;
+}
+
+.cbp-spmenu-bottom {
+	bottom: -150px;
+}
+
+.cbp-spmenu-top.cbp-spmenu-open {
+	top: 0px;
+}
+
+.cbp-spmenu-bottom.cbp-spmenu-open {
+	bottom: 0px;
+}
+
+/* Push classes applied to the body */
+
+.cbp-spmenu-push {
+	overflow-x: hidden;
+	position: relative;
+	left: 0;
+}
+
+.cbp-spmenu-push-toright {
+	left: 240px;
+}
+
+.cbp-spmenu-push-toleft {
+	left: -240px;
+}
+
+/* Transitions */
+
+.cbp-spmenu,
+.cbp-spmenu-push {
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+
+/* Example media queries */
+
+@media screen and (max-width: 55.1875em){
+
+	.cbp-spmenu-horizontal {
+		font-size: 75%;
+		height: 110px;
+	}
+
+	.cbp-spmenu-top {
+		top: -110px;
+	}
+
+	.cbp-spmenu-bottom {
+		bottom: -110px;
+	}
+
+}
+
+@media screen and (max-height: 26.375em){
+
+	.cbp-spmenu-vertical {
+		font-size: 90%;
+		width: 190px;
+	}
+
+	.cbp-spmenu-left,
+	.cbp-spmenu-push-toleft {
+		left: -190px;
+	}
+
+	.cbp-spmenu-right {
+		right: -190px;
+	}
+
+	.cbp-spmenu-push-toright {
+		left: 190px;
+	}
+}
+
+      .comp-feat-wrapper {
+            margin-top: 1%;
+      }
+
+      .comparison-one, .comparison-two {
+          display: block;
+          background:white;
+          border-radius: 5px;
+          padding: 5px;
+          margin-top: 10px;
+      }
+
+      .modal-open {
+          padding-right: 0px !important;
+      }
+
+      .bar {
+          fill: #f16913;
+      }
+
+      .bar:hover {
+          fill: #a63603;
+      }
+
+      .toolTip {
+          position: absolute;
+          display: none;
+          height: auto;
+          background: white;
+          color: black;
+          border: 1px solid white;
+          padding: 14px;
+          -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
+          -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+          box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+      }
+
+      text.close-button:hover {
+          cursor: pointer;
+      }
+
+      .carousel-inner{
+          width: 300px;
+          height: 200px;
+          text-align: center;
+      }
+    #floating-panel {
+        position: absolute;
+        bottom: 0%;
+        left: 0%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+    }
+
+    </style>
+  </head>
+  <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <a class="navbar-brand" href="launch.html">NikeVis</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <!--<li class="nav-item">
+                <a class="nav-link" href="index.html">Average Price Map</a>
+              </li>-->
+              <li class="nav-item">
+                <a class="nav-link" href="depth.html">Map</a>
+              </li>
+            </ul>
+            <!--
+                <form class="form-inline">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            -->
+          </div>
+        </nav>
+    <div class="containers">
+        <!-- Title -->
+        <h1 class="title has-text-centered">Victoria</h1>
+        <h2 class="subtitle has-text-centered">Cost of Housing</h2>
+
+        <!-- Comparison Modal -->
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Comparisons</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--<div style="text-align: center;"><svg class="comp-bar-chart" width="600" height="250"></svg></div>-->
+                        <div id="comp-table"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="wrapper">
+            <div id="map" style="width:70%;height:575px;"></div>
+            <div class="invisible" id="legend-wrapper" style="width: 450px; height: 50px;"><svg id="legend" width="450" height="50"></svg></div>
+            <!--<div id="floating-panel" style="float: left;"><svg class="price" width="250" height="250"></svg></div>-->
+        </div>
+            <div class="filter-bar">
+                <div class="filters">
+                    <!--Filter checkboxes-->
+                    <div>
+                      <ul class="filterButton">
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="beds0"/>0 bedrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="beds1"/>1 bedrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="beds2"/>2 bedrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="beds3"/>3 bedrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="beds4"/>4 bedrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="beds5"/>5 bedrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="beds6"/>6 bedrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="baths1"/>1 bathroom</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="baths2"/>2 bathrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="baths3"/>3 bathrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="pets"/>pets</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="furnished"/>furnished</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="roommate"/>roommate</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="utilities"/>utilites</label></li>
+                      </ul>
+                    </div>
+                    <!--Price slider-->
+                    <div style="margin: 2em" class="regular-slider"></div>
+                    <script type="text/javascript" src="/js/toggle_button"></script>
+                </div>
+                <div class="comparison">
+                    <h1>Comparison Queue</h1>
+                    <div class="container">
+                        <div class="row" id="comparison-queue-row" style="margin-top:1%;">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-info btn-lg comp-feat-compare" data-toggle="modal" data-target="#exampleModalLong" onclick="update_compare_depth()" style="position:absolute; bottom: 1%; left: 42%;">Compare</button>
+                </div>
+            </div>
+
+        <!-- Info 
+        <div class="footers">
+            <p class="subtitle is-5 has-text-centered">Created by: NikeVis</p>
+        </div>
+        -->
+    </div>
+    <script src="js/classie.js"></script>
+    <script>
+        //update_comparison_queue_row();
+        var map;
+        var comparison_queue = []; // comparison queue for in-depth map <global variable>
+        var comparison_queue_row = d3.select("#comparison-queue-row");
+        var infowindow; //make it global variable for comparison info
+        var default_avg_price = 1000;
+        var averageNeighbourhoodPrices = new Map();
+
+        //color
+        var price_domain = [600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200];
+        var price_color = d3.scaleThreshold()
+            .domain(price_domain)
+            .range(d3.schemeOranges[9]);
+        //create x-axis for scale
+        var x = d3.scaleLinear()
+            .domain([600, 2400])
+            .rangeRound([500, 900]);
+
+        d3.csv("data/project_sample_average_neighbourhood_prices.csv", function (d) {
+            return averageNeighbourhoodPrices.set(d.neighbourhood, +d.price);
+        }, function(data) {
+            console.log("reading price average data file...");
+        });
+        //console.log(averageNeighbourhoodPrices);
+
+        function initMap() {
+            window.map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: new google.maps.LatLng(48.4284, -123.3656)
+            });
+
+            // for neighbourhood boundary label
+            var marker_label = new google.maps.Marker({
+                position: null,
+                map: map,
+                title: '',
+                icon: {
+                    labelOrigin: new google.maps.Point(0,0),
+                    url: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Blank.png"
+                },
+                label: {
+                    text: '', //feature.getProperty('Name')
+                    color: '#D3D3D3',
+                    fontWeight: "bold",
+                    fontSize: "20px"
+                },
+                visible: false
+            });
+
+            // price legend
+            var price_legend_map = d3.select("#legend"),
+                legend_width = +price_legend_map.attr("width"),
+                legend_height = +price_legend_map.attr("height");
+
+            var price_legend = price_legend_map
+                .attr("width", legend_width)
+                .attr("height", legend_height)
+                .insert("g");
+
+            //drawing scale
+            price_legend
+                .attr("transform", "translate(-440, 25)")
+                .selectAll("rect")
+                .data(price_color.range().map(function(d) {
+                    d = price_color.invertExtent(d);
+                    if (d[0] == null) d[0] = x.domain()[0];
+                    if (d[1] == null) d[1] = x.domain()[1];
+                    return d;
+                }))
+                .enter().append("rect")
+                .attr("height", 8)
+                .attr("x", function(d) { return x(d[0]); })
+                .attr("width", function(d) { return x(d[1]) - x(d[0]); })
+                .attr("fill-opacity","0.90")
+                .attr("fill", function(d) {
+                    return price_color(d[0]); });
+
+            //add text to scale
+            price_legend.append("text")
+                .attr("class", "caption")
+                .attr("x", x.range()[0])
+                .attr("y", -6) //-6
+                .attr("fill", "#000")
+                .attr("text-anchor", "start")
+                .attr("font-weight", "bold")
+                .text("Price Range");
+
+            //add ticks to scale
+            price_legend.call(d3.axisBottom(x)
+                .tickSize(13)
+                .tickFormat(function(x, i) {
+                    return "$" + x; })
+                .tickValues(price_color.domain()))
+                .select(".domain")
+                .remove();
+
+            // push legend to the top right corner of the map
+            var legend = document.getElementById("legend-wrapper");
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(legend);
+            legend.className = "visible";
+
+            // set up the style rules and events for google.maps.Data
+            map.data.setStyle(styleFeature);
+            map.data.addListener('mouseover', mouseInToRegion);
+            map.data.addListener('mouseout', mouseOutOfRegion);
+            map.data.loadGeoJson('https://raw.githubusercontent.com/Zanelib1/Infovis/master/Neighbourhood_Boundaries.json', { idPropertyName: 'Name' });
+            var script = document.createElement('script');
+            script.src = 'https://rawgit.com/Zanelib1/Infovis/master/pointData%20copy.js';
+            document.getElementsByTagName('head')[0].appendChild(script);
+            var marker, i;
+            var markers = [];
+
+            window.eqfeed_callback = function(results) {
+                map.markData = results;
+
+                for (i = 0; i < results.features.length; i++) {
+                    var coords = results.features[i].geometry.coordinates;
+                    var latLng = new google.maps.LatLng(coords[1],coords[0]);
+                    marker = new google.maps.Marker({
+                        position: latLng,
+                        map: map,
+                        animation: google.maps.Animation.DROP // test: for fun
+                    });
+
+                    infowindow = new google.maps.InfoWindow({
+                        content: ""
+                    });
+
+                    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                        return function() {
+
+                            try{
+                                infowindow.close();
+                            }
+                            catch(err) {
+                                // do nothing
+                            }
+
+                            var contentString = '<div id="content">'+ "<div id='rentalCarousel' class='carousel slide' data-ride='carousel' style='background-color:black;'></div>" +
+                                '<br><h1>'+ "Posted On: " +results.features[i].properties.date+ '</h1><br>'+
+                                '<p>'+ '<b>'+ "Price: $" + '</b>' + results.features[i].properties.price+ '<br>'+
+                                '<b>'+ "Address: " + '</b>' + results.features[i].properties.address+ '<br>'+
+                                '<b>'+ "Bedrooms: " + '</b>' + results.features[i].properties.bedrooms+ '<br>'+
+                                '<b>'+ "Bathrooms: " + '</b>' + results.features[i].properties.bathrooms+ '<br>'+
+                                '<b>'+ "Pets: " + '</b>' + results.features[i].properties.pets+ '<br>'+
+                                '<b>'+ "Furnished: " + '</b>' + results.features[i].properties.furnished+ '<br>'+
+                                '<b>'+ "Roommate: " + '</b>' + results.features[i].properties.roommate+ '<br>'+
+                                '<b>'+ "Utilities: " + '</b>' + results.features[i].properties.utilities+ '<br>'+
+                                '<b>'+ "Neighbourhood: " + '</b>' + results.features[i].properties.neighbourhood+ '<br>'+
+                                "<div style='text-align:center;'><button id='btn-add-to-compare' type='button' class='btn btn-primary' style='margin-left:7%;'>Add to Compare</button></div>" +
+                                '<br></div>';
+                            infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+
+                            map.panTo(marker.getPosition()); // avoid overlay of avg_price map
+                            infowindow.open(map, marker);
+
+                            update_carousel(i);
+
+                            //document.getElementById("btn-add-to-compare").outerHTML = "<button id='btn-add-to-compare' type='button' class='btn btn-primary'>Add to Compare</button>";
+                            document.getElementById("btn-add-to-compare").addEventListener("click", function (ev) {
+                                if (comparison_queue.length < 6) {
+                                    //comparison_queue.push(results.features[i].properties);
+                                    comparison_queue.push({
+                                        marker: marker, // google map marker
+                                        rid: +i, // id for random photos
+                                        uid: +comparison_queue.length, // unique id for queue
+                                        address : results.features[i].properties.address,
+                                        price : +results.features[i].properties.price,
+                                        bedrooms : +results.features[i].properties.bedrooms,
+                                        bathrooms : +results.features[i].properties.bathrooms,
+                                        pets : +results.features[i].properties.pets, // binary
+                                        furnished : +results.features[i].properties.furnished, // binary
+                                        date : results.features[i].properties.date,
+                                        roommate : +results.features[i].properties.roommate, // binary
+                                        utilities : +results.features[i].properties.utilities, // binary
+                                        neighbourhood : results.features[i].properties.neighbourhood
+                                    });
+                                }else {
+                                    alert("Queue is full, please remove from queue first.");
+                                }
+                                console.log(comparison_queue);
+                                update_comparison_queue_row();
+                            }, false);
+                        }
+                    })(marker, i));
+                    markers.push(marker);
+                    
+                    google.maps.event.addListener(infowindow, 'closeclick', function () {
+                        try {
+                            var element = document.getElementById("btn-add-to-compare");
+                            element.outerHTML = "<button id='btn-add-to-compare' type='button' class='btn btn-primary'>Add to Compare</button>";
+                        }
+                        catch(err) {
+                            // do nothing
+                            //console.log("catch when close");
+                        }
+                    });
+                }
+
+                var mcOptions = {gridSize: 25, maxZoom: 20, zoomOnClick: true, imagePath: 'img/m'};
+                var markerCluster = new MarkerClusterer(map, markers, mcOptions);
+                map.markerCluster = markerCluster;
+                map.markers = markers;
+            };
+
+            function styleFeature(feature) {
+
+                var polyCoords = feature.getGeometry();
+
+                // find center of the bound
+                var bounds = new google.maps.LatLngBounds();
+                polyCoords.forEachLatLng(function (path) {
+                    bounds.extend(path);
+                });
+                var myLatlng = bounds.getCenter();
+                //console.log("center: " + myLatlng);
+
+                var outlineWeight = 0.5, zIndex = 1, fillOpacity = 0.25;
+
+                if (feature.getProperty('Description') === 'hover') {
+                    marker_label.set("title", feature.getProperty('Name'));
+                    marker_label.set("label", {
+                        text: feature.getProperty('Name'),
+                        color: '#000000',
+                        fontWeight: "bold",
+                        fontSize: "25px"
+                    });
+                    marker_label.set("position", myLatlng);
+                    marker_label.set("visible", true);
+                    outlineWeight = zIndex = 2;
+                    fillOpacity = 0.90;
+                }else {
+                    marker_label.set("visible", false);
+                }
+
+                return {
+                    strokeWeight: outlineWeight,
+                    strokeColor: '#ffffff', //#000000
+                    zIndex: zIndex,
+                    fillColor: price_color(averageNeighbourhoodPrices.get(feature.getProperty('Name'))), //"#ff9933"
+                    fillOpacity: fillOpacity
+                };
+            }
+            /*
+            map.data.addListener('mouseover', function(e) {
+                map.data.setStyle({
+                    fillColor: "#00FF00"
+                });
+            });
+            map.data.addListener('mouseout', function(e) {
+                map.data.setStyle({
+                    fillColor: "#FF0000"
+                });
+            });*/
+
+            function mouseInToRegion(e) {
+                // set the hover state so the setStyle function can change the border
+                e.feature.setProperty('Description', 'hover');
+            }  
+            function mouseOutOfRegion(e) {
+                // reset the hover state, returning the border to normal
+                e.feature.setProperty('Description', ''); // 'normal'
+            }
+        }
+
+        var picture_folder = [
+            ['img/rental_img/rental1/0.jpg','img/rental_img/rental1/1.jpg','img/rental_img/rental1/2.jpg',
+            'img/rental_img/rental1/3.jpg','img/rental_img/rental1/4.jpg'],
+            ['img/rental_img/rental2/0.jpg','img/rental_img/rental2/1.jpg','img/rental_img/rental2/2.jpg',
+                'img/rental_img/rental2/3.jpg','img/rental_img/rental2/4.jpg','img/rental_img/rental2/5.jpg'],
+            ['img/rental_img/rental3/0.jpg','img/rental_img/rental3/1.jpg','img/rental_img/rental3/2.jpg',
+                'img/rental_img/rental3/3.jpg','img/rental_img/rental3/4.jpg'],
+            ['img/rental_img/rental4/0.jpg','img/rental_img/rental4/1.jpg','img/rental_img/rental4/2.jpg',
+                'img/rental_img/rental4/3.jpg','img/rental_img/rental4/4.jpg'],
+            ['img/rental_img/rental5/0.jpg','img/rental_img/rental5/1.jpg','img/rental_img/rental5/2.jpg',
+                'img/rental_img/rental5/3.jpg','img/rental_img/rental5/4.jpg']
+        ];
+
+        // update pictures for rental
+        function update_carousel(pos) {
+
+            try {
+                d3.select("#rentalCarousel").selectAll("*").remove();
+            }
+            catch (err) {}
+
+            //var random_index = Math.floor(Math.random() * Math.floor(5)); // random select from folder -- 5 is the max number
+            //console.log(random_index);
+            var random_index = pos % 5;
+
+            var rental_carousel = d3.select("#rentalCarousel");
+
+            var carousel_indicator = rental_carousel.append("ol").attr("class", "carousel-indicators"); // indicators
+            var carousel_inner = rental_carousel.append("div").attr("class", "carousel-inner"); // inner contents
+
+            for(var i=0; i<picture_folder[random_index].length; i++) {
+                // modify indicators
+                var single_indicator = carousel_indicator.append("li")
+                    .attr("data-target", "#rentalCarousel")
+                    .attr("data-slide-to", i);
+
+                // modify inner
+                var inner_item;
+                if(i === 0) {
+                    single_indicator.attr("class", "active");
+                    inner_item = carousel_inner.append("div").attr("class", "carousel-item active");
+                }
+                else { inner_item = carousel_inner.append("div").attr("class", "carousel-item"); }
+                inner_item.append("img")
+                    .attr("class", "d-block w-100 mx-auto")
+                    .attr("src", picture_folder[random_index][i])
+                    .attr("alt", function (d) {
+                        return "picture " + i;
+                    });
+            }
+
+            // add control prev and next
+            rental_carousel.append("a").attr("class", "carousel-control-prev")
+                .attr("href", "#rentalCarousel")
+                .attr("role", "button")
+                .attr("data-slide", "prev")
+                .html(
+                    "<span class='carousel-control-prev-icon' aria-hidden='true'></span>\n" +
+                    "    <span class='sr-only'>Previous</span>"
+                );
+            rental_carousel.append("a").attr("class", "carousel-control-next")
+                .attr("href", "#rentalCarousel")
+                .attr("role", "button")
+                .attr("data-slide", "next")
+                .html(
+                    "<span class='carousel-control-next-icon' aria-hidden='true'></span>\n" +
+                    "    <span class='sr-only'>Next</span>"
+                );
+        }
+
+        // update comparison queue
+        function update_comparison_queue_row() {
+            comparison_queue_row.selectAll("*").remove();
+
+            if (comparison_queue.length === 0) {
+                //comparison_queue_row.html("<div class='col-sm'>No Item.</div>");
+                return;
+            }
+
+            for(var i=0; i<comparison_queue.length; i++) {
+                var curr_pos = i;
+                var queue_col = comparison_queue_row.append("div").attr("class", "col-sm")
+                    .style("background", "#D5D5D5")
+                    .style("text-align", "center")
+                    .style("padding", "5px")
+                    .style("border", "3px solid white");
+                queue_col.html("<strong>" + comparison_queue[curr_pos].address + "</strong></br>")
+                    .append("div")
+                    .attr("class", "btn-group")
+                    .attr("role", "group")
+                    .attr("aria-label", "btn group")
+                    .append("button")
+                    .attr("type", "button")
+                    .attr("class", "btn btn btn-secondary btn-sm")
+                    .text("Info")
+                    .style("float", "left")
+                    .attr("id", curr_pos)
+                    .on("click", function (data) {
+                        try{
+                            infowindow.close();
+                        }
+                        catch(err) {
+                            // do nothing
+                        }
+
+                        var index = +this.id;
+
+                        var latLng = comparison_queue[index].marker.getPosition(); // returns LatLng object
+                        map.panTo(latLng);
+
+                        var contentString = '<div id="content">'+ "<div id='rentalCarousel' class='carousel slide' data-ride='carousel' style='background-color:black;'></div>" +
+                            '<br><h1>'+ "Posted On: " +comparison_queue[index].date + '</h1><br>'+
+                            '<p>'+ '<b>'+ "Price: $" + '</b>' + comparison_queue[index].price+ '<br>'+
+                            '<b>'+ "Address: " + '</b>' + comparison_queue[index].address+ '<br>'+
+                            '<b>'+ "Bedrooms: " + '</b>' + comparison_queue[index].bedrooms+ '<br>'+
+                            '<b>'+ "Bathrooms: " + '</b>' + comparison_queue[index].bathrooms+ '<br>'+
+                            '<b>'+ "Pets: " + '</b>' + comparison_queue[index].pets+ '<br>'+
+                            '<b>'+ "Furnished: " + '</b>' + comparison_queue[index].furnished+ '<br>'+
+                            '<b>'+ "Roommate: " + '</b>' + comparison_queue[index].roommate+ '<br>'+
+                            '<b>'+ "Utilities: " + '</b>' + comparison_queue[index].utilities+ '<br>'+
+                            '<b>'+ "Neighbourhood: " + '</b>' + comparison_queue[index].neighbourhood+ '<br>'+
+                            '</div>';
+                        infowindow = new google.maps.InfoWindow({
+                            content: contentString
+                        });
+
+                        infowindow.open(map, comparison_queue[index].marker); // Trigger the "open()" method
+
+                        update_carousel(comparison_queue[index].rid);
+                    })
+                    .select(function () {
+                        return this.parentNode;
+                    })
+                    .append("button")
+                    .attr("class", "btn btn-danger btn-sm")
+                    .style("float", "left")
+                    .text("Remove")
+                    .attr("id", curr_pos)
+                    .on("click", function (data) {
+                        comparison_queue.splice(this.id, 1);
+                        update_comparison_queue_row();
+                    });
+            }
+        }
+
+        // Same function in victoria.js, comparison_queue changed to comparison_queue.
+        function update_compare_depth() {
+
+            // price barchart
+            /*
+            var comp_feat_price_barchart = d3.select("svg.comp-bar-chart"),
+                margin = {top: 20, right: 20, bottom: 30, left: 40},
+                width = +comp_feat_price_barchart.attr("width") - margin.left - margin.right,
+                height = +comp_feat_price_barchart.attr("height") - margin.top - margin.bottom;
+
+            comp_feat_price_barchart.selectAll("*").remove();
+            d3.select("#comp-table").selectAll("*").remove(); // clean screen before forming thable
+
+            var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+                y = d3.scaleLinear().rangeRound([height, 0]);
+
+            var comp_feat_price_g = comp_feat_price_barchart.append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var i = 0;
+
+            x.domain(comparison_queue.map(function (d) {
+                i++;
+                return "Property " + i;
+            }));
+            y.domain([0, d3.max(comparison_queue, function(d) { return d.price; })]);
+
+            if(comparison_queue.length === 0) {
+                comp_feat_price_g.append("div").text("Not enough item.").style("justify-content", "center");
+                return;
+            }
+
+            comp_feat_price_g.append("g")
+                .attr("class", "axis axis--x")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x));
+
+            comp_feat_price_g.append("g")
+                .attr("class", "axis axis--y")
+                .call(
+                    d3.axisLeft(y)
+                        .ticks(10)
+                        .tickFormat(function (d) {
+                            return '$' + d;
+                        })
+                )
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", "0.71em")
+                .attr("text-anchor", "end")
+                .text("Price");
+
+            i=0;
+
+            comp_feat_price_g.selectAll(".bar")
+                .data(comparison_queue).enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d) { i++; return x("Property " + i); })
+                .attr("y", function(d) { return y(d.price); })
+                .attr("width", x.bandwidth())
+                .attr("height", function(d) { return height - y(d.price); });
+            */
+
+            if (comparison_queue.length === 0) {
+                d3.select("#comp-table").html("<div>Not enough properties.</div>");
+                return;
+            }
+
+            d3.select("#comp-table").selectAll("*").remove(); // clean screen before forming table
+
+            // comparison feature table
+
+            var comp_feat_table = d3.select("#comp-table").append("table");
+            comp_feat_table.attr("class", "table")
+                .style("border-collapse", "collapse")
+                .style("width", "100%");
+
+            // table header
+            var comp_feat_header = comp_feat_table.append("thead").append("tr");
+            comp_feat_header.append("th");
+            var i;
+            for(i=0; i< comparison_queue.length; i++) {
+                comp_feat_header.append("th").text(comparison_queue[i].address);
+            }
+            var comp_feat_body = comp_feat_table.append("tbody");
+
+            var price_body = comp_feat_body.append("tr"); // price
+            price_body.append("th").text("Price");
+            var bedroom_body = comp_feat_body.append("tr"); // bedroom
+            bedroom_body.append("th").text("Bedrooms");
+            var bathroom_body = comp_feat_body.append("tr"); //bathroom
+            bathroom_body.append("th").text("Bathrooms");
+            var pet_body = comp_feat_body.append("tr"); //pet
+            pet_body.append("th").text("Pets");
+            var furnished_body = comp_feat_body.append("tr"); //furnished
+            furnished_body.append("th").text("Furnished");
+            var roommate_body = comp_feat_body.append("tr"); //roommate
+            roommate_body.append("th").text("Roommate");
+            var utilities_body = comp_feat_body.append("tr"); //utilities
+            utilities_body.append("th").text("Utilities");
+            var neighbourhood_body = comp_feat_body.append("tr"); //utilities
+            neighbourhood_body.append("th").text("Neighbourhood");
+            for(i=0; i< comparison_queue.length; i++) {
+                // price (+/- diff_price)
+                //price_body.append("td").text("$"+comparison_queue[i].price);
+
+                price_body.append("td").html(function () {
+                    var output = "$"+ comparison_queue[i].price; // current price
+                    var diff_price;
+
+                    console.log(comparison_queue[i].neighbourhood);
+                    console.log(averageNeighbourhoodPrices.get(comparison_queue[i].neighbourhood));
+
+                    if (comparison_queue[i].neighbourhood === "") {
+                        diff_price = comparison_queue[i].price - default_avg_price;
+                    }else {
+                        diff_price = comparison_queue[i].price - averageNeighbourhoodPrices.get(comparison_queue[i].neighbourhood);
+                    }
+
+                    if (diff_price > 0) { output += "<br>(<span style='color: red;'>&uarr;"; }
+                    else if(diff_price < 0) { output += "<br>(<span style='color: green;'>&darr;"; }
+                    else { output += "<span style='color: grey;'>("; }
+
+                    output += Math.abs(diff_price) + "</span>)";
+                    return output;
+                });
+
+                bedroom_body.append("td").text(comparison_queue[i].bedrooms);
+                bathroom_body.append("td").text(comparison_queue[i].bathrooms);
+
+                if (comparison_queue[i].pets === 1) {
+                    pet_body.append("td").html("<i class='fa fa-check fa-sm' aria-hidden='true' style='color:#58D68D'></i>");
+                }else if (comparison_queue[i].pets === 0) {
+                    pet_body.append("td").html("<i class='fa fa-times fa-sm' aria-hidden='true' style='color:#E74C3C'></i>");
+                }else {
+                    pet_body.append("td").html("<i class='fa fa-question fa-sm' aria-hidden='true'></i>");
+                }
+
+                if (comparison_queue[i].furnished === 1) {
+                    furnished_body.append("td").html("<i class='fa fa-check fa-sm' aria-hidden='true' style='color:#58D68D'></i>");
+                }else if (comparison_queue[i].furnished === 0) {
+                    furnished_body.append("td").html("<i class='fa fa-times fa-sm' aria-hidden='true' style='color:#E74C3C'></i>");
+                }else {
+                    furnished_body.append("td").html("<i class='fa fa-question fa-sm' aria-hidden='true'></i>");
+                }
+
+                if (comparison_queue[i].roommate === 1) {
+                    roommate_body.append("td").html("<i class='fa fa-check fa-sm' aria-hidden='true' style='color:#58D68D'></i>");
+                }else if (comparison_queue[i].roommate === 0) {
+                    roommate_body.append("td").html("<i class='fa fa-times fa-sm' aria-hidden='true' style='color:#E74C3C'></i>");
+                }else {
+                    roommate_body.append("td").html("<i class='fa fa-question fa-sm' aria-hidden='true'></i>");
+                }
+
+                if (comparison_queue[i].utilities === 1) {
+                    utilities_body.append("td").html("<i class='fa fa-check fa-sm' aria-hidden='true' style='color:#58D68D'></i>");
+                }else if (comparison_queue[i].utilities === 0) {
+                    utilities_body.append("td").html("<i class='fa fa-times fa-sm' aria-hidden='true' style='color:#E74C3C'></i>");
+                }else {
+                    utilities_body.append("td").html("<i class='fa fa-question fa-sm' aria-hidden='true'></i>");
+                }
+
+                neighbourhood_body.append("td").text(comparison_queue[i].neighbourhood);
+            }
+        }
+     
+    </script>
+    <!-- Your D3 code for ny maps 
+    <script type="text/javascript" src="js/victoria2.js"></script>-->
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaIAEkOYsRCWwNB6yG7KmXfriMB4mq7zI&callback=initMap"></script>
+</body>
+
+</html>

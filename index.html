@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>InfoRent</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+    </script>
+
+    <!-- Bootstrap core CSS and js -->
+    <link href="/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- Custom fonts for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <!--resources related to toggle buttons-->
+    <script src="https://unpkg.com/nouislider@10.0.0/distribute/nouislider.min.js"></script>
+    <script src="https://unpkg.com/wnumb@1.1.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/nouislider@10.0.0/distribute/nouislider.min.css">
+    <link rel="stylesheet"  type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.3.2/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/toggle_button">
+
+    <!-- D3.js CDN source -->
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.5/d3-legend.js"></script>
+
+    <style>
+      /* General styles for all menus */
+
+.cbp-spmenu {
+	background: #47a3da;
+	position: fixed;
+}
+
+.cbp-spmenu h3 {
+	color: #afdefa;
+	font-size: 1.9em;
+	padding: 20px;
+	margin: 0;
+	font-weight: 300;
+	background: #0d77b6;
+}
+
+.cbp-spmenu a {
+	display: block;
+	color: #fff;
+	font-size: 1.1em;
+	font-weight: 300;
+}
+
+.cbp-spmenu a:hover {
+	background: #258ecd;
+}
+
+.cbp-spmenu a:active {
+	background: #afdefa;
+	color: #47a3da;
+}
+
+/* Orientation-dependent styles for the content of the menu */
+
+.cbp-spmenu-vertical {
+	width: 240px;
+	height: 100%;
+	top: 0;
+	z-index: 1000;
+}
+
+.cbp-spmenu-vertical a {
+	border-bottom: 1px solid #258ecd;
+	padding: 1em;
+}
+
+.cbp-spmenu-horizontal {
+	width: 100%;
+	height: 150px;
+	left: 0;
+	z-index: 1000;
+	overflow: hidden;
+}
+
+.cbp-spmenu-horizontal h3 {
+	height: 100%;
+	width: 20%;
+	float: left;
+}
+
+.cbp-spmenu-horizontal a {
+	float: left;
+	width: 20%;
+	padding: 0.8em;
+	border-left: 1px solid #258ecd;
+}
+
+/* Vertical menu that slides from the left or right */
+
+.cbp-spmenu-left {
+	left: -240px;
+}
+
+.cbp-spmenu-right {
+	right: -240px;
+}
+
+.cbp-spmenu-left.cbp-spmenu-open {
+	left: 0px;
+}
+
+.cbp-spmenu-right.cbp-spmenu-open {
+	right: 0px;
+}
+
+/* Horizontal menu that slides from the top or bottom */
+
+.cbp-spmenu-top {
+	top: -150px;
+}
+
+.cbp-spmenu-bottom {
+	bottom: -150px;
+}
+
+.cbp-spmenu-top.cbp-spmenu-open {
+	top: 0px;
+}
+
+.cbp-spmenu-bottom.cbp-spmenu-open {
+	bottom: 0px;
+}
+
+/* Push classes applied to the body */
+
+.cbp-spmenu-push {
+	overflow-x: hidden;
+	position: relative;
+	left: 0;
+}
+
+.cbp-spmenu-push-toright {
+	left: 240px;
+}
+
+.cbp-spmenu-push-toleft {
+	left: -240px;
+}
+
+/* Transitions */
+
+.cbp-spmenu,
+.cbp-spmenu-push {
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+
+/* Example media queries */
+
+@media screen and (max-width: 55.1875em){
+
+	.cbp-spmenu-horizontal {
+		font-size: 75%;
+		height: 110px;
+	}
+
+	.cbp-spmenu-top {
+		top: -110px;
+	}
+
+	.cbp-spmenu-bottom {
+		bottom: -110px;
+	}
+
+}
+
+@media screen and (max-height: 26.375em){
+
+	.cbp-spmenu-vertical {
+		font-size: 90%;
+		width: 190px;
+	}
+
+	.cbp-spmenu-left,
+	.cbp-spmenu-push-toleft {
+		left: -190px;
+	}
+
+	.cbp-spmenu-right {
+		right: -190px;
+	}
+
+	.cbp-spmenu-push-toright {
+		left: 190px;
+	}
+}
+      #outer {
+        width: 100%;
+        text-align: center;
+      }
+      #inner {
+        width: 95%;
+        display: inline-block;
+      }
+
+      circle.mark-point:hover {
+          cursor: pointer;
+          r: 5px;
+          fill: #27A4F5;
+      }
+
+      .toolTip {
+          position: absolute;
+          display: none;
+          height: auto;
+          background: white;
+          color: black;
+          border: 1px solid white;
+          padding: 14px;
+          -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
+          -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+          box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+      }
+
+      text.close-button:hover {
+          cursor: pointer;
+      }
+
+      .comp-feat-wrapper {
+            margin-top: 1%;
+      }
+
+      .comparison-item-one, .comparison-item-two, .comparison-item-three {
+          display: block;
+          background:white;
+          border-radius: 5px;
+          padding: 5px;
+          margin-top: 10px;
+      }
+
+      .modal-open {
+          padding-right: 0px !important;
+      }
+
+      .bar {
+          fill: #f16913;
+      }
+
+      .bar:hover {
+          fill: #a63603;
+      }
+
+    </style>
+  </head>
+  <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <a class="navbar-brand" href="launch.html">NikeVis</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <!-- <li class="nav-item">
+                <a class="nav-link" href="index.html">Average Price Map</a>
+              </li> -->
+              <li class="nav-item">
+                <a class="nav-link" href="depth.html">Map</a>
+              </li>
+            </ul>
+            <!--
+              <form class="form-inline">
+                  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+            -->
+          </div>
+        </nav>
+    <div class="container">
+        <!-- Title -->
+        <h1 class="title has-text-centered">Victoria</h1>
+        <h2 class="subtitle has-text-centered">Cost of Housing</h2>
+          <div id="outer">
+            <div id="inner">
+              <div style="display: flex;">
+                <div style="float: left;"><svg class="price" width="900" height="500"></svg></div>
+                <div class="comparison-feat" style="float: left; width: 400px; height: 500px;">
+                  <div class="comp-feat-wrapper">
+                  <h1><strong>Comparison Queue</strong></h1>
+                  <div class="comparison-item-queue">
+                      <div class="comparison-item-one"></div>
+                      <div class="comparison-item-two"></div>
+                      <div class="comparison-item-three"></div>
+                  </div>
+                  <button type="button" class="btn btn-info btn-lg comp-feat-compare" data-toggle="modal" data-target="#exampleModalLong" style="margin-top: 10px;">Compare</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+              <!-- Comparison Modal -->
+              <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Comparisons</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                          <div class="modal-body">
+                              <div><svg class="comp-bar-chart" width="400" height="250"></svg></div>
+                              <div id="comp-table"></div>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+        <!-- Your D3 code for ny maps -->
+        <script type="text/javascript" src="js/victoria.js"></script>
+        <!--
+        <nav class="cbp-spmenu cbp-spmenu-horizontal cbp-spmenu-bottom" id="cbp-spmenu-s4">
+            <h3>Menu</h3>
+            <a href="#">Celery seakale</a>
+            <a href="#">Dulse daikon</a>
+            <a href="#">Zucchini garlic</a>
+            <a href="#">Catsear azuki bean</a>
+            <a href="#">Dandelion bunya</a>
+            <a href="#">Rutabaga</a>
+            <a href="#">Celery seakale</a>
+            <a href="#">Dulse daikon</a>
+            <a href="#">Zucchini garlic</a>
+            <a href="#">Catsear azuki bean</a>
+            <a href="#">Dandelion bunya</a>
+            <a href="#">Rutabaga</a>
+        
+        </nav>-->
+        <!--
+          <div class="container">
+              <div class="main">
+                <section>
+                  <button id="showBottom" class="btn btn-dark">Show/Hide Bottom Slide Menu</button>
+                </section>
+
+              </div>
+          </div>
+        -->
+          
+    <!---
+        <p class="subtitle is-5 has-text-centered">Created by: NikeVis</p>
+        --> 
+
+    </div>
+    <script src="js/classie.js"></script>
+    <script>
+      var menuBottom = document.getElementById( 'cbp-spmenu-s4' ),
+      showBottom = document.getElementById( 'showBottom' ),
+      body = document.body;
+      /*
+      showBottom.onclick = function() {
+        classie.toggle( this, 'active' );
+        classie.toggle( menuBottom, 'cbp-spmenu-open' );
+        disableOther( 'showBottom' );
+      };
+  
+      function disableOther( button ) {
+        if( button !== 'showBottom' ) {
+          classie.toggle( showBottom, 'disabled' );
+        }
+      }*/
+    </script>
+  </body>
+
+</html>

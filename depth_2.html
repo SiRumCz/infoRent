@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>InfoRent</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+    </script>
+    <script href="/js/markerclusterer.js" type="text/javascript">
+    </script>
+    <!-- Bootstrap core CSS and js -->
+    <link href="/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- Custom fonts for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <!--resources related to toggle buttons-->
+    <script src="https://unpkg.com/nouislider@10.0.0/distribute/nouislider.min.js"></script>
+    <script src="https://unpkg.com/wnumb@1.1.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/nouislider@10.0.0/distribute/nouislider.min.css">
+    <link rel="stylesheet"  type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.3.2/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/toggle_button">
+
+    <!-- D3.js CDN source -->
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.5/d3-legend.js"></script>
+
+    <style>
+      /* General styles for all menus */
+      .containers {
+  position: relative;
+  width: 100%;
+  height:100%;
+  padding-right: 0px;
+  padding-left: 0px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.footers {
+    height:4%;
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   color: white;
+   text-align: center;
+}
+
+.filter-bar {
+  position: absolute;
+  width: 30%;
+  height: 575px;
+  top: 77px;
+  right: 0px;
+  border: 3px solid #000000;
+  padding: 10px;
+}
+
+.filters {
+    border-bottom: 3px solid #000000;
+    margin-bottom:10px;
+    height: 250px
+}
+
+.regular-slider {
+    top: 50px;
+}
+
+.sidebar {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 120px;
+    background-color: lightgreen;
+}
+
+.cbp-spmenu {
+	background: #47a3da;
+	position: fixed;
+}
+
+.cbp-spmenu h3 {
+	color: #afdefa;
+	font-size: 1.9em;
+	padding: 20px;
+	margin: 0;
+	font-weight: 300;
+	background: #0d77b6;
+}
+
+.cbp-spmenu a {
+	display: block;
+	color: #fff;
+	font-size: 1.1em;
+	font-weight: 300;
+}
+
+.cbp-spmenu a:hover {
+	background: #258ecd;
+}
+
+.cbp-spmenu a:active {
+	background: #afdefa;
+	color: #47a3da;
+}
+
+/* Orientation-dependent styles for the content of the menu */
+
+.cbp-spmenu-vertical {
+	width: 240px;
+	height: 100%;
+	top: 0;
+	z-index: 1000;
+}
+
+.cbp-spmenu-vertical a {
+	border-bottom: 1px solid #258ecd;
+	padding: 1em;
+}
+
+.cbp-spmenu-horizontal {
+	width: 100%;
+	height: 150px;
+	left: 0;
+	z-index: 1000;
+	overflow: hidden;
+}
+
+.cbp-spmenu-horizontal h3 {
+	height: 100%;
+	width: 20%;
+	float: left;
+}
+
+.cbp-spmenu-horizontal a {
+	float: left;
+	width: 20%;
+	padding: 0.8em;
+	border-left: 1px solid #258ecd;
+}
+
+/* Vertical menu that slides from the left or right */
+
+.cbp-spmenu-left {
+	left: -240px;
+}
+
+.cbp-spmenu-right {
+	right: -240px;
+}
+
+.cbp-spmenu-left.cbp-spmenu-open {
+	left: 0px;
+}
+
+.cbp-spmenu-right.cbp-spmenu-open {
+	right: 0px;
+}
+
+/* Horizontal menu that slides from the top or bottom */
+
+.cbp-spmenu-top {
+	top: -150px;
+}
+
+.cbp-spmenu-bottom {
+	bottom: -150px;
+}
+
+.cbp-spmenu-top.cbp-spmenu-open {
+	top: 0px;
+}
+
+.cbp-spmenu-bottom.cbp-spmenu-open {
+	bottom: 0px;
+}
+
+/* Push classes applied to the body */
+
+.cbp-spmenu-push {
+	overflow-x: hidden;
+	position: relative;
+	left: 0;
+}
+
+.cbp-spmenu-push-toright {
+	left: 240px;
+}
+
+.cbp-spmenu-push-toleft {
+	left: -240px;
+}
+
+/* Transitions */
+
+.cbp-spmenu,
+.cbp-spmenu-push {
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+
+/* Example media queries */
+
+@media screen and (max-width: 55.1875em){
+
+	.cbp-spmenu-horizontal {
+		font-size: 75%;
+		height: 110px;
+	}
+
+	.cbp-spmenu-top {
+		top: -110px;
+	}
+
+	.cbp-spmenu-bottom {
+		bottom: -110px;
+	}
+
+}
+
+@media screen and (max-height: 26.375em){
+
+	.cbp-spmenu-vertical {
+		font-size: 90%;
+		width: 190px;
+	}
+
+	.cbp-spmenu-left,
+	.cbp-spmenu-push-toleft {
+		left: -190px;
+	}
+
+	.cbp-spmenu-right {
+		right: -190px;
+	}
+
+	.cbp-spmenu-push-toright {
+		left: 190px;
+	}
+}
+
+      circle.mark-point:hover {
+          cursor: pointer;
+          r: 5px;
+          fill: #27A4F5;
+      }
+
+      .toolTip {
+          position: absolute;
+          display: none;
+          height: auto;
+          background: white;
+          color: black;
+          border: 1px solid white;
+          padding: 14px;
+          -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
+          -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+          box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+      }
+
+      text.close-button:hover {
+          cursor: pointer;
+      }
+
+      .comp-feat-wrapper {
+            margin-top: 1%;
+      }
+
+      .comparison-one, .comparison-two {
+          display: block;
+          background:white;
+          border-radius: 5px;
+          padding: 5px;
+          margin-top: 10px;
+      }
+    #floating-panel {
+        position: absolute;
+        bottom: 0%;
+        left: 0%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+    }
+
+    </style>
+  </head>
+  <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <a class="navbar-brand" href="#">NikeVis</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="launch.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Average Price Map</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="depth.html">In-Depth Map</a>
+              </li>
+            </ul>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+          </div>
+        </nav>
+    <div class="containers">
+        <!-- Title -->
+        <h1 class="title has-text-centered">Victoria</h1>
+        <h2 class="subtitle has-text-centered">Cost of Housing</h2>
+            <div id="wrapper">
+                    <div id="map" style="width:70%;height:575px;"></div>
+                    <div id="floating-panel" style="float: left;"><svg class="price" width="300" height="300"></svg></div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="filters">
+                    <!--Filter checkboxes-->
+                    <div>
+                      <ul class="filterButton">
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" class="filterButtonInput" id="beds1"/>1 bedroom</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="beds2"/>2 bedrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="beds3"/>3 bedrooms</label></li>
+                        <li style="list-style-type: none;"><label class="labelButton"><input type="checkbox" id="pets"/>pets</label></li>
+                      </ul>
+                    </div>
+                    <!--Price slider-->
+                    <div style="margin: 2em" class="regular-slider"></div>
+                    <script type="text/javascript" src="/js/toggle_button"></script>
+                </div>
+                <div class="comparison">Placeholder for comparison</div>
+            </div>
+
+        <!-- Info 
+        <div class="footers">
+            <p class="subtitle is-5 has-text-centered">Created by: NikeVis</p>
+        </div>
+        -->
+    </div>
+    <script src="js/classie.js"></script>
+    <script>
+        var map;
+        function initMap() {
+            window.map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: new google.maps.LatLng(48.4284, -123.3656),
+
+            });
+              // set up the style rules and events for google.maps.Data
+            map.data.setStyle(styleFeature);
+            map.data.addListener('mouseover', mouseInToRegion);
+            map.data.addListener('mouseout', mouseOutOfRegion);
+            map.data.loadGeoJson('https://raw.githubusercontent.com/Zanelib1/Infovis/master/Infovis/Neighbourhood_Boundaries.json', { idPropertyName: 'Name' });
+            var script = document.createElement('script');
+            script.src = 'http://rawgit.com/Zanelib1/Infovis/master/Infovis/pointData%20copy.js';
+            document.getElementsByTagName('head')[0].appendChild(script);
+            var infowindow = new google.maps.InfoWindow;
+            var marker, i;
+            var markers = [];
+            window.eqfeed_callback = function(results) {
+                map.markData = results;
+
+                for (i = 0; i < results.features.length; i++) {
+                    var coords = results.features[i].geometry.coordinates;
+                    var latLng = new google.maps.LatLng(coords[1],coords[0]);
+                    var marker = new google.maps.Marker({
+                        position: latLng,
+                        map: map
+                    });
+                    var contentString = '<div id="content">'+
+                        '<h1>'+ "Posted On: " +results.features[i].properties.date+ '</h1><br>'+
+                        '<p>'+ '<b>'+ "Price: " + '</b>' + results.features[i].properties.price+ '<br>'+
+                        '<b>'+ "Address: " + '</b>' + results.features[i].properties.address+ '<br>'+
+                        '<b>'+ "Bedrooms: " + '</b>' + results.features[i].properties.bedrooms+ '<br>'+
+                        '<b>'+ "Bathrooms: " + '</b>' + results.features[i].properties.bathrooms+ '<br>'+
+                        '<b>'+ "Pets: " + '</b>' + results.features[i].properties.pets+ '<br>'+
+                        '<b>'+ "Furnished: " + '</b>' + results.features[i].properties.furnished+ '<br>'+
+                        '<b>'+ "Roommate: " + '</b>' + results.features[i].properties.roommate+ '<br>'+
+                        '<b>'+ "Utilities: " + '</b>' + results.features[i].properties.utilities+ '<br>'+
+                        '<p></div>';
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+
+                    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                        return function() {
+                            
+                            infowindow.open(map, marker);
+                        }
+                    })(marker, i));
+                    markers.push(marker);
+                    
+                }
+
+                var mcOptions = {gridSize: 25, maxZoom: 20, zoomOnClick: true, imagePath: 'img/m'};
+                var markerCluster = new MarkerClusterer(map, markers, mcOptions);
+                map.markerCluster = markerCluster;
+                map.markers = markers;
+            }
+            
+            
+            
+
+            function styleFeature(feature) {
+                
+                var outlineWeight = 0.5, zIndex = 1;
+                if (feature.getProperty('Name') === 'hover') {
+                    outlineWeight = zIndex = 2;
+                }
+
+                return {
+                    strokeWeight: outlineWeight,
+                    strokeColor: '#000000',
+                    zIndex: zIndex,
+                    fillColor: "#ff9933",
+                    fillOpacity: 0.25
+                    
+                };
+            }/*
+            map.data.addListener('mouseover', function(e) {
+                map.data.setStyle({
+                    fillColor: "#00FF00"
+                });
+            });
+            map.data.addListener('mouseout', function(e) {
+                map.data.setStyle({
+                    fillColor: "#FF0000"
+                });
+            });*/
+            function mouseInToRegion(e) {
+                // set the hover state so the setStyle function can change the border
+                e.feature.setProperty('Name', 'hover');
+            }  
+            function mouseOutOfRegion(e) {
+                // reset the hover state, returning the border to normal
+                e.feature.setProperty('Name', 'normal');
+            }
+        }
+        
+
+
+       
+    
+      
+  
+     
+    </script>
+     <!-- Your D3 code for ny maps -->
+     <script type="text/javascript" src="js/victoria2.js"></script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaIAEkOYsRCWwNB6yG7KmXfriMB4mq7zI&callback=initMap"></script>
+</body>
+
+</html>
